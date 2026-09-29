@@ -1,0 +1,41 @@
+
+CREATE TABLE readers (
+    reader_id   SERIAL PRIMARY KEY,
+    full_name   VARCHAR(100) NOT NULL,
+    phone       VARCHAR(20)  NOT NULL UNIQUE
+);
+
+CREATE TABLE books (
+    isbn         VARCHAR(20) PRIMARY KEY,
+    title        VARCHAR(200) NOT NULL,
+    publish_year INT CHECK (publish_year BETWEEN 1000 AND 2100)
+);
+
+
+CREATE TABLE authors (
+    author_id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE book_authors (
+    isbn      VARCHAR(20) NOT NULL,
+    author_id INT         NOT NULL,
+    PRIMARY KEY (isbn, author_id),
+    FOREIGN KEY (isbn)      REFERENCES books(isbn)        ON DELETE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES authors(author_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE loans (
+    loan_id            SERIAL PRIMARY KEY,
+    reader_id          INT NOT NULL,
+    isbn               VARCHAR(20) NOT NULL,
+    loan_date          DATE NOT NULL,
+    due_date           DATE NOT NULL,
+    actual_return_date DATE,
+    FOREIGN KEY (reader_id) REFERENCES readers(reader_id),
+    FOREIGN KEY (isbn)      REFERENCES books(isbn),
+    CHECK (due_date >= loan_date),
+    CHECK (actual_return_date IS NULL OR actual_return_date >= loan_date)
+);

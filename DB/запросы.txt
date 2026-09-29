@@ -1,0 +1,54 @@
+Задание 1. Все читатели
+
+SELECT * FROM Readers;
+
+Задание 2. Каталог книг
+
+SELECT title, publication_year FROM Books;
+
+Задание 3. Книги XIX века (1801–1900)
+
+SELECT title, publication_year
+FROM Books
+WHERE publication_year BETWEEN 1801 AND 1900;
+
+Задание 4. Советский период (1917–1991)
+
+SELECT title, publication_year
+FROM Books
+WHERE publication_year BETWEEN 1917 AND 1991;
+
+Задание 5. Поиск по телефону
+
+SELECT * FROM Readers
+WHERE phone = '+7-900-333-44-55';
+
+Задание 6. Поиск по фрагменту ФИО
+
+SELECT * FROM Readers
+WHERE full_name LIKE '%Петров%';
+
+Задание 7. Активные выдачи
+
+SELECT * FROM Loans
+WHERE actual_return_date IS NULL;
+
+Задание 8. Книги по алфавиту
+
+SELECT title, publication_year
+FROM Books
+ORDER BY title ASC;
+
+Задание 9. Ближайшие возвраты
+
+SELECT loan_id, reader_id, book_isbn, due_date
+FROM Loans
+WHERE actual_return_date IS NULL
+ORDER BY due_date ASC;
+
+Задание 10. Три самые старые книги
+
+SELECT title, publication_year
+FROM Books
+ORDER BY publication_year ASC
+LIMIT 3;
