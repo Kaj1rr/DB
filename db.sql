@@ -139,3 +139,99 @@ SELECT title, publish_year
 FROM Books
 ORDER BY publish_year ASC
 LIMIT 3;
+
+
+SELECT b.title, a.full_name
+FROM books b
+JOIN book_authors ba ON b.isbn = ba.isbn
+JOIN authors a ON ba.author_id = a.author_id;
+
+SELECT b.title
+FROM books b
+LEFT JOIN book_authors ba ON b.isbn = ba.isbn
+WHERE ba.isbn IS NULL;
+
+
+SELECT r.full_name, b.title, l.loan_date
+FROM loans l
+JOIN readers r ON l.reader_id = r.reader_id
+JOIN books b ON l.isbn = b.isbn;
+
+
+SELECT full_name
+FROM readers
+WHERE reader_id IN (
+    SELECT reader_id FROM loans
+    WHERE isbn = '978-5-17-118366-8'
+);
+
+SELECT title, publish_year
+FROM books
+WHERE publish_year > (SELECT AVG(publish_year) FROM books);
+
+
+SELECT r.reader_id, r.full_name
+FROM readers r
+WHERE EXISTS (
+    SELECT 1 FROM loans l
+    WHERE l.reader_id = r.reader_id
+      AND l.actual_return_date IS NULL
+);
+
+SELECT DISTINCT r.full_name
+FROM readers r
+LEFT JOIN loans l ON r.reader_id = l.reader_id
+LEFT JOIN books b ON l.isbn = b.isbn AND b.title = 'Война и мир'
+WHERE b.isbn IS NULL;
+
+
+SELECT full_name
+FROM readers
+WHERE reader_id NOT IN (
+    SELECT l.reader_id
+    FROM loans l
+    JOIN books b ON l.isbn = b.isbn
+    WHERE b.title = 'Война и мир'
+);
+
+
+SELECT b.title
+FROM loans l
+RIGHT JOIN books b ON l.isbn = b.isbn
+WHERE l.loan_id IS NULL;
+
+SELECT r.full_name, b.title, l.loan_date
+FROM readers r
+FULL OUTER JOIN loans l ON r.reader_id = l.reader_id
+FULL OUTER JOIN books b ON l.isbn = b.isbn;
+
+
+SELECT DISTINCT r.full_name
+FROM readers r
+JOIN loans l ON r.reader_id = l.reader_id
+JOIN books b ON l.isbn = b.isbn
+WHERE b.publish_year = (SELECT MIN(publish_year) FROM books);
+
+SELECT full_name
+FROM readers
+WHERE reader_id IN (
+    SELECT reader_id FROM loans
+    WHERE isbn IN (
+        SELECT isbn FROM books
+        WHERE publish_year = (SELECT MIN(publish_year) FROM books)
+    )
+);
+
+SELECT r.full_name, b.publish_year
+FROM readers r
+CROSS JOIN (SELECT DISTINCT publish_year FROM books) b
+ORDER BY r.full_name, b.publish_year;
+
+
+SELECT DISTINCT a1.full_name AS author1, a2.full_name AS author2, b.title
+FROM book_authors ba1
+JOIN book_authors ba2
+     ON ba1.isbn = ba2.isbn AND ba1.author_id < ba2.author_id
+JOIN authors a1 ON ba1.author_id = a1.author_id
+JOIN authors a2 ON ba2.author_id = a2.author_id
+JOIN books b ON ba1.isbn = b.isbn;
