@@ -96,7 +96,7 @@ VALUES ('Читатель2', '+7-000-000-00-00');
 DELETE FROM readers
 WHERE full_name = 'Читатель2';
 
-
+-- 3 задание
 SELECT * FROM Readers;
 
 
@@ -140,7 +140,7 @@ FROM Books
 ORDER BY publish_year ASC
 LIMIT 3;
 
-
+-- 4 задание
 SELECT b.title, a.full_name
 FROM books b
 JOIN book_authors ba ON b.isbn = ba.isbn
